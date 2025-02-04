@@ -60,7 +60,7 @@ dependencies {
 
 kotlin { // [manual]
     sourceSets {
-        //val androidTest by getting { kotlin.srcDir("src/test/ui") }
+        val androidTest by getting { kotlin.srcDir("src/test/ui") }
         val main by getting { kotlin.srcDir("src/main") }
         val test by getting { kotlin.srcDir("src/test/unit") }
     }
