@@ -1,5 +1,3 @@
-package org.andapis
-
 import org.junit.Test
 
 import org.junit.Assert.*

@@ -57,3 +57,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
+kotlin { // [manual]
+    sourceSets {
+        //val androidTest by getting { kotlin.srcDir("src/test/ui") }
+        val main by getting { kotlin.srcDir("src/main") }
+        val test by getting { kotlin.srcDir("src/test/unit") }
+    }
+}
