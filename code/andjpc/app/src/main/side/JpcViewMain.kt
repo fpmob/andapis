@@ -1,4 +1,4 @@
-//  Copyright © 2025 Christopher Augustus
+//  Copyright © 2024 - 2025 Christopher Augustus
 //
 //  This Source Code Form is subject to the terms of the Mozilla Public
 //  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,18 +9,16 @@ package org.andapis.side
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.*
-import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.style.*
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
-import org.andapis.ui.theme.AndjpcTheme
-
 import org.andapis.pure.present.*
+import org.andapis.ui.theme.AndjpcTheme
 
 fun colorFrom(c: ColorPalette)
   = c.value.let { Color(red = it.r, green = it.g, blue = it.b, alpha = it.a) }
