@@ -20,6 +20,10 @@ fun osStatsPresent(model: OsStats): OsStatsPresent = model.run {
     )
 }
 
+fun osStatsPresentString(model: OsStats)= osStatsPresent(model).run {
+    name + " " + version
+}
+
 fun prefixNonEmpty(prefix: String, string: String) =
     if (string.isNotEmpty()) prefix + string else ""
 
