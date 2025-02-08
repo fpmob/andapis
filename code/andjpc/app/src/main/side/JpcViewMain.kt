@@ -51,10 +51,7 @@ fun jpcViewInner(padding: PaddingValues)
   = Column(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier
-            .background(Color.Black)
-            .fillMaxSize()
-            .padding(padding)
+        modifier = Modifier.fillMaxSize().padding(padding)
     ) {
         var hasDraws  by remember { mutableStateOf(false) }
         var hasPerfs  by remember { mutableStateOf(false) }
