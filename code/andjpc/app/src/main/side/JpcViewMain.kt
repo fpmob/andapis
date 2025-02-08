@@ -53,38 +53,47 @@ fun jpcViewInner(padding: PaddingValues)
         verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxSize().padding(padding)
     ) {
-        var hasDraws  by remember { mutableStateOf(false) }
-        var hasPerfs  by remember { mutableStateOf(false) }
-        var hasRandom by remember { mutableStateOf(false) }
-        var hasStress by remember { mutableStateOf(false) }
+        var hasApiGroup by remember { mutableStateOf(true) }
+        var hasApiSpec  by remember { mutableStateOf(true) }
+        var hasExecNew  by remember { mutableStateOf(true) }
+        var hasExecOld  by remember { mutableStateOf(true) }
+    /* TODO: @@@ DEPRECATED THE BUTTONS
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(0.32f)
                     .padding(top = paddingCommon.dp,
                              end = paddingCommon.dp,
                           bottom = paddingCommon.dp)) {
-                jpcButtonPanel("Draws",  ColorPalette.BackDraw  ) { hasDraws  = !hasDraws }
-                jpcButtonPanel("Random", ColorPalette.BackRandom) { hasRandom = !hasRandom}
+                jpcButtonPanel("API group", ColorPalette.BackApiGroup   ) { hasApiGroup  = !hasApiGroup }
+                jpcButtonPanel("exec new",  ColorPalette.BackExecNew) { hasExecNew = !hasExecNew}
             }
             Column(modifier = Modifier.weight(0.32f)
                     .padding(top = paddingCommon.dp,
                              end = paddingCommon.dp,
                           bottom = paddingCommon.dp)) {
-                jpcButtonPanel("Perfs",  ColorPalette.BackPerf  ) { hasPerfs  = !hasPerfs }
-                jpcButtonPanel("Stress", ColorPalette.BackStress) { hasStress = !hasStress }
+                jpcButtonPanel("API spec",  ColorPalette.BackApiSpec   ) { hasApiSpec  = !hasApiSpec }
+                jpcButtonPanel("exec old",  ColorPalette.BackExecOld) { hasExecOld = !hasExecOld }
             }
         }
-        if (hasDraws || hasPerfs)
+    */
+        if (hasApiGroup)
             Row(modifier = Modifier.weight(1.0f)) {
-                if (hasDraws)  jpcViewDraws()
-                if (hasPerfs)  jpcViewPerfs()
+                jpcViewApiGroup()
             }
-        if (hasRandom || hasStress)
+        if (hasApiSpec)
             Row(modifier = Modifier.weight(1.0f)) {
-                if (hasRandom) jpcViewRandom()
-                if (hasStress) jpcViewStress()
+                jpcViewApiSpec()
+            }
+        if (hasExecNew)
+            Row(modifier = Modifier.weight(1.0f)) {
+                jpcViewExecNew()
+            }
+        if (hasExecOld)
+            Row(modifier = Modifier.weight(1.0f)) {
+                jpcViewExecOld()
             }
     }
 
+/* TODO: @@@ DEPRECATED THE BUTTONS
 @Composable
 fun jpcButtonPanel(
     label:      String,
@@ -101,6 +110,7 @@ fun jpcButtonPanel(
             overflow = TextOverflow.Clip,
             style = MaterialTheme.typography.labelLarge)
     }
+*/
 
 @Composable
 fun RowScope.jpcViewPanel(colorBack: ColorPalette, colorBord: ColorPalette)
@@ -112,17 +122,17 @@ fun RowScope.jpcViewPanel(colorBack: ColorPalette, colorBord: ColorPalette)
 ) {}
 
 @Composable
-fun RowScope.jpcViewDraws()
-  = jpcViewPanel(ColorPalette.BackDraw,   ColorPalette.BordDraw)
+fun RowScope.jpcViewApiGroup()
+  = jpcViewPanel(ColorPalette.BackApiGroup, ColorPalette.BordApiGroup)
 
 @Composable
-fun RowScope.jpcViewPerfs()
-  = jpcViewPanel(ColorPalette.BackPerf,   ColorPalette.BordPerf)
+fun RowScope.jpcViewApiSpec()
+  = jpcViewPanel(ColorPalette.BackApiSpec,  ColorPalette.BordApiSpec)
 
 @Composable
-fun RowScope.jpcViewRandom()
-  = jpcViewPanel(ColorPalette.BackRandom, ColorPalette.BordRandom)
+fun RowScope.jpcViewExecNew()
+  = jpcViewPanel(ColorPalette.BackExecNew,  ColorPalette.BordExecNew)
 
 @Composable
-fun RowScope.jpcViewStress()
-  = jpcViewPanel(ColorPalette.BackStress, ColorPalette.BordStress)
+fun RowScope.jpcViewExecOld()
+  = jpcViewPanel(ColorPalette.BackExecOld,  ColorPalette.BordExecOld)
