@@ -30,8 +30,10 @@ val widthBordPanel  = 4
 @Composable
 fun jpcViewMain()
   = AndjpcTheme {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            jpcViewInterior()
+        Scaffold(
+            topBar = { jpcTopAppBar() }
+        ) { padding ->
+            jpcViewInner(padding)
         }
     }
 
@@ -39,25 +41,26 @@ fun jpcViewMain()
 @Composable
 fun jpcViewMainPreview() = jpcViewMain()
 
+@OptIn(ExperimentalMaterial3Api::class) // (still experimental?!)
 @Composable
-fun jpcViewInterior()
+fun jpcTopAppBar()
+  = CenterAlignedTopAppBar(title = { Text(osStatsPresentString(osStats())) })
+
+@Composable
+fun jpcViewInner(padding: PaddingValues)
   = Column(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .background(Color.Black)
             .fillMaxSize()
+            .padding(padding)
     ) {
         var hasDraws  by remember { mutableStateOf(false) }
         var hasPerfs  by remember { mutableStateOf(false) }
         var hasRandom by remember { mutableStateOf(false) }
         var hasStress by remember { mutableStateOf(false) }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(modifier = Modifier
-                    .weight(0.36f)
-                    .padding(all = paddingCommon.dp)) {
-                jpcViewOsStats(osStatsPresent(osStats()))
-            }
             Column(modifier = Modifier.weight(0.32f)
                     .padding(top = paddingCommon.dp,
                              end = paddingCommon.dp,
@@ -100,26 +103,6 @@ fun jpcButtonPanel(
             letterSpacing = 0.sp,
             overflow = TextOverflow.Clip,
             style = MaterialTheme.typography.labelLarge)
-    }
-
-@Composable
-fun jpcViewOsStats(model: OsStatsPresent)
-  = Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .background(colorFrom(ColorPalette.BackOs))
-            .padding(all = paddingOsStats.dp)
-    ) {
-        Text(
-            text      = model.name,
-            color     = colorFrom(ColorPalette.ForeOs),
-            textAlign = TextAlign.Center,
-            style     = MaterialTheme.typography.titleSmall)
-        Text(
-            text      = model.version,
-            color     = colorFrom(ColorPalette.ForeOs),
-            textAlign = TextAlign.Center,
-            style     = MaterialTheme.typography.titleMedium)
     }
 
 @Composable
