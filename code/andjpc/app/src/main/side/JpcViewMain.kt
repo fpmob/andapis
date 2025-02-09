@@ -8,6 +8,7 @@ package org.andapis.side
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
+import org.andapis.pure.domain.*
 import org.andapis.pure.present.*
 import org.andapis.ui.theme.AndjpcTheme
 
@@ -75,22 +77,10 @@ fun jpcViewInner(padding: PaddingValues)
             }
         }
     */
-        if (hasApiGroup)
-            Row(modifier = Modifier.weight(1.0f)) {
-                jpcViewApiGroup()
-            }
-        if (hasApiSpec)
-            Row(modifier = Modifier.weight(1.0f)) {
-                jpcViewApiSpec()
-            }
-        if (hasExecNew)
-            Row(modifier = Modifier.weight(1.0f)) {
-                jpcViewExecNew()
-            }
-        if (hasExecOld)
-            Row(modifier = Modifier.weight(1.0f)) {
-                jpcViewExecOld()
-            }
+        if (hasApiGroup) Row(modifier = Modifier.weight(1.0f)) { jpcViewApiGroup() }
+        if (hasApiSpec)  Row(modifier = Modifier.weight(1.0f)) { jpcViewApiSpec() }
+        if (hasExecNew)  Row(modifier = Modifier.weight(1.0f)) { jpcViewExecNew() }
+        if (hasExecOld)  Row(modifier = Modifier.weight(1.0f)) { jpcViewExecOld() }
     }
 
 /* TODO: @@@ DEPRECATED THE BUTTONS
@@ -113,17 +103,26 @@ fun jpcButtonPanel(
 */
 
 @Composable
-fun RowScope.jpcViewPanel(colorBack: ColorPalette, colorBord: ColorPalette)
-  = Box(modifier = Modifier
+fun RowScope.jpcViewPanel(
+    colorBack:  ColorPalette,
+    colorBord:  ColorPalette,
+    content:    @Composable() () -> Unit = {}
+) = Box(modifier = Modifier
         .background(colorFrom(colorBack))
         .border(widthBordPanel.dp, colorFrom(colorBord))
         .fillMaxHeight()
         .weight(1.0f)
-) {}
+    ) { content() }
 
 @Composable
 fun RowScope.jpcViewApiGroup()
-  = jpcViewPanel(ColorPalette.BackApiGroup, ColorPalette.BordApiGroup)
+  = jpcViewPanel(ColorPalette.BackApiGroup, ColorPalette.BordApiGroup) {
+        LazyColumn {
+            items(apiSpecs) { spec ->
+                Row { Text(text = spec.name) }
+            }
+        }
+    }
 
 @Composable
 fun RowScope.jpcViewApiSpec()
