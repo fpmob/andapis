@@ -14,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
@@ -26,6 +27,7 @@ fun colorFrom(c: ColorPalette)
   = c.value.let { Color(red = it.r, green = it.g, blue = it.b, alpha = it.a) }
 
 val paddingCommon   = 16
+val paddingItemVert = 4
 val paddingOsStats  = 8
 val widthBordPanel  = 4
 
@@ -103,6 +105,23 @@ fun jpcButtonPanel(
 */
 
 @Composable
+fun jpcViewTextItem(
+    text:       String,
+    colorFore:  ColorPalette
+) = Text(
+        text        = text,
+        color       = colorFrom(colorFore),
+        fontFamily  = FontFamily.Monospace,
+        fontWeight  = FontWeight.Bold,
+        style       = MaterialTheme.typography.titleLarge,
+        maxLines    = 1,
+        modifier    = Modifier
+            .padding(
+                start = paddingCommon.dp, top    = paddingItemVert.dp,
+                end   = paddingCommon.dp, bottom = paddingItemVert.dp),
+    )
+
+@Composable
 fun RowScope.jpcViewPanel(
     colorBack:  ColorPalette,
     colorBord:  ColorPalette,
@@ -119,7 +138,12 @@ fun RowScope.jpcViewApiGroup()
   = jpcViewPanel(ColorPalette.BackApiGroup, ColorPalette.BordApiGroup) {
         LazyColumn {
             items(apiSpecs) { spec ->
-                Row { Text(text = spec.name) }
+                Row(modifier = Modifier
+                    .clickable {
+                    }
+                ) {
+                    jpcViewTextItem(spec.name, ColorPalette.ForeApiGroup)
+                }
             }
         }
     }
