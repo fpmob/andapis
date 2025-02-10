@@ -78,8 +78,21 @@ fun jpcViewInner(padding: PaddingValues)
             }
         }
     */
-        if (hasApiGroup) Row(modifier = Modifier.weight(1.0f)) { jpcViewApiGroup() }
-        if (hasApiSpec)  Row(modifier = Modifier.weight(1.0f)) { jpcViewApiSpec() }
+        var mutStateSpec by remember { mutableStateOf(ApiSpec()) }
+        if (hasApiGroup) Row(modifier = Modifier.weight(1.0f)) {
+            jpcViewApiSpec(
+                ColorPalette.BackApiGroup,
+                ColorPalette.BordApiGroup,
+                ColorPalette.ForeApiGroup,
+                apiSpecs,
+                { spec -> mutStateSpec = spec }) }
+        if (hasApiSpec)  Row(modifier = Modifier.weight(1.0f)) {
+            jpcViewApiSpec(
+                ColorPalette.BackApiSpec,
+                ColorPalette.BordApiSpec,
+                ColorPalette.ForeApiSpec,
+                mutStateSpec.list,
+                { spec -> mutStateSpec = spec }) }
         if (hasExecNew)  Row(modifier = Modifier.weight(1.0f)) { jpcViewExecNew() }
         if (hasExecOld)  Row(modifier = Modifier.weight(1.0f)) { jpcViewExecOld() }
     }
@@ -135,23 +148,23 @@ fun RowScope.jpcViewPanel(
     ) { content() }
 
 @Composable
-fun RowScope.jpcViewApiGroup()
-  = jpcViewPanel(ColorPalette.BackApiGroup, ColorPalette.BordApiGroup) {
+fun RowScope.jpcViewApiSpec(
+    colorBack:      ColorPalette,
+    colorBord:      ColorPalette,
+    colorFore:      ColorPalette,
+    specs:          List<ApiSpec>,
+    onItemSelected: (ApiSpec) -> Unit
+) = jpcViewPanel(colorBack, colorBord) {
         LazyColumn {
-            items(apiSpecs) { spec ->
+            items(specs) { spec ->
                 Row(modifier = Modifier
-                    .clickable {
-                    }
+                    .clickable { onItemSelected(spec) }
                 ) {
-                    jpcViewTextItem(spec.name, ColorPalette.ForeApiGroup)
+                    jpcViewTextItem(spec.name, colorFore)
                 }
             }
         }
     }
-
-@Composable
-fun RowScope.jpcViewApiSpec()
-  = jpcViewPanel(ColorPalette.BackApiSpec,  ColorPalette.BordApiSpec)
 
 @Composable
 fun RowScope.jpcViewExecNew()
