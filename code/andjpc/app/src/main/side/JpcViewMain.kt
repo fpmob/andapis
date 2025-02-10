@@ -28,7 +28,6 @@ fun colorFrom(c: ColorPalette)
 
 val paddingCommon   = 16
 val paddingItemVert = 4
-val paddingOsStats  = 8
 val widthBordPanel  = 4
 
 @Composable
@@ -130,6 +129,8 @@ fun RowScope.jpcViewPanel(
         .background(colorFrom(colorBack))
         .border(widthBordPanel.dp, colorFrom(colorBord))
         .fillMaxHeight()
+        .padding(top    = paddingCommon.dp / 2,
+                 bottom = paddingCommon.dp / 2)
         .weight(1.0f)
     ) { content() }
 
