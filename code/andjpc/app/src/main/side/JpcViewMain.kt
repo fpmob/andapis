@@ -56,10 +56,10 @@ fun jpcViewInner(padding: PaddingValues)
         verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxSize().padding(padding)
     ) {
+        var hasExecRes  by remember { mutableStateOf(true) }
+        var hasApiExec  by remember { mutableStateOf(true) }
+        var hasApiFinal by remember { mutableStateOf(true) }
         var hasApiGroup by remember { mutableStateOf(true) }
-        var hasApiSpec  by remember { mutableStateOf(true) }
-        var hasExecNew  by remember { mutableStateOf(true) }
-        var hasExecOld  by remember { mutableStateOf(true) }
     /* TODO: @@@ DEPRECATED THE BUTTONS
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(0.32f)
@@ -67,42 +67,51 @@ fun jpcViewInner(padding: PaddingValues)
                              end = paddingCommon.dp,
                           bottom = paddingCommon.dp)) {
                 jpcButtonPanel("API group", ColorPalette.BackApiGroup   ) { hasApiGroup  = !hasApiGroup }
-                jpcButtonPanel("exec new",  ColorPalette.BackExecNew) { hasExecNew = !hasExecNew}
+                jpcButtonPanel("exec new",  ColorPalette.BackApiExec) { hasApiExec = !hasApiExec}
             }
             Column(modifier = Modifier.weight(0.32f)
                     .padding(top = paddingCommon.dp,
                              end = paddingCommon.dp,
                           bottom = paddingCommon.dp)) {
-                jpcButtonPanel("API spec",  ColorPalette.BackApiSpec   ) { hasApiSpec  = !hasApiSpec }
-                jpcButtonPanel("exec old",  ColorPalette.BackExecOld) { hasExecOld = !hasExecOld }
+                jpcButtonPanel("API spec",  ColorPalette.BackApiSpec   ) { hasApiFinal  = !hasApiFinal }
+                jpcButtonPanel("exec old",  ColorPalette.BackExecRes) { hasExecRes = !hasExecRes }
             }
         }
     */
-        var mutStateExec by remember { mutableStateOf("") }
-        var mutStateSpec by remember { mutableStateOf(ApiSpec()) }
+        var mutStateExecRes   by remember { mutableStateOf("") }
+        var mutStateSpecCurr  by remember { mutableStateOf(ApiSpec()) }
+        var mutStateSpecExec  by remember { mutableStateOf(ApiSpec()) }
+
+        if (hasExecRes)  Row(modifier = Modifier.weight(1.0f)) {
+            jpcViewExecRes(mutStateExecRes) }
+        if (hasApiExec)  Row(modifier = Modifier.weight(1.0f)) {
+            jpcViewApiExec(
+                mutStateSpecExec,
+                { spec ->
+                    mutStateExecRes = apiCalls[
+                            mutStateSpecCurr.name + "." + spec.name]
+                        ?.let { it() }
+                        ?: "### MISSING API CALL"
+                }) }
+        if (hasApiFinal) Row(modifier = Modifier.weight(1.0f)) {
+            jpcViewApiSpec(
+                ColorPalette.BackApiSpec,
+                ColorPalette.BordApiSpec,
+                ColorPalette.ForeApiSpec,
+                mutStateSpecCurr.list,
+                { spec ->
+                    if (spec.list.isEmpty())
+                        mutStateSpecExec = spec
+                    else
+                        mutStateSpecCurr = spec
+                }) }
         if (hasApiGroup) Row(modifier = Modifier.weight(1.0f)) {
             jpcViewApiSpec(
                 ColorPalette.BackApiGroup,
                 ColorPalette.BordApiGroup,
                 ColorPalette.ForeApiGroup,
                 apiSpecs,
-                { spec -> mutStateSpec = spec }) }
-        if (hasApiSpec)  Row(modifier = Modifier.weight(1.0f)) {
-            jpcViewApiSpec(
-                ColorPalette.BackApiSpec,
-                ColorPalette.BordApiSpec,
-                ColorPalette.ForeApiSpec,
-                mutStateSpec.list,
-                { spec ->
-                    if (spec.list.isEmpty())
-                        mutStateExec = spec.exec
-                    else
-                        mutStateSpec = spec
-                }) }
-        if (hasExecNew)  Row(modifier = Modifier.weight(1.0f)) {
-            jpcViewExecNew(mutStateExec) }
-        if (hasExecOld)  Row(modifier = Modifier.weight(1.0f)) {
-            jpcViewExecOld() }
+                { spec -> mutStateSpecCurr = spec }) }
     }
 
 /* TODO: @@@ DEPRECATED THE BUTTONS
@@ -166,9 +175,7 @@ fun RowScope.jpcViewApiSpec(
 ) = jpcViewPanel(colorBack, colorBord) {
         LazyColumn {
             items(subspecs) { subspec ->
-                Row(modifier = Modifier
-                    .clickable { onItemSelected(subspec) }
-                ) {
+                Row(modifier = Modifier.clickable { onItemSelected(subspec) }) {
                     jpcViewTextItem(subspec.name, colorFore)
                 }
             }
@@ -176,12 +183,18 @@ fun RowScope.jpcViewApiSpec(
     }
 
 @Composable
-fun RowScope.jpcViewExecNew(
-    exec: String
-) = jpcViewPanel(ColorPalette.BackExecNew, ColorPalette.BordExecNew) {
-        jpcViewTextItem(exec, ColorPalette.ForeExecNew, 4)
+fun RowScope.jpcViewApiExec(
+    spec:           ApiSpec,
+    onItemSelected: (ApiSpec) -> Unit
+) = jpcViewPanel(ColorPalette.BackApiExec, ColorPalette.BordApiExec) {
+        Box(modifier = Modifier.clickable { onItemSelected(spec) }) {
+            jpcViewTextItem(spec.exec, ColorPalette.ForeApiExec, 4)
+        }
     }
 
 @Composable
-fun RowScope.jpcViewExecOld()
-  = jpcViewPanel(ColorPalette.BackExecOld,  ColorPalette.BordExecOld)
+fun RowScope.jpcViewExecRes(
+    result: String
+) = jpcViewPanel(ColorPalette.BackExecRes, ColorPalette.BordExecRes) {
+        jpcViewTextItem(result, ColorPalette.ForeApiExec, 4)
+    }
