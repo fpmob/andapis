@@ -14,7 +14,8 @@ val apiSpecs = listOf(
     )),
     ApiSpec(kind=ApiKind.Package, name="android.net.wifi", list=listOf(
         ApiSpec(kind=ApiKind.Class, name="WifiManager", list=listOf(
-            ApiSpec(36, ApiChange.Added, ApiKind.Method, "getAvailableAdvancedProtectionFeatures"),
+            ApiSpec(36, ApiChange.Added, ApiKind.Method, "getAvailableAdvancedProtectionFeatures",
+                    "getAvailableAdvancedProtectionFeatures() -> List<AdvancedProtectionFeature>"),
             ApiSpec(36, ApiChange.Added, ApiKind.Method, "isUsdPublisherSupported"),
             ApiSpec(36, ApiChange.Added, ApiKind.Method, "isUsdSubscriberSupported"),
         )),
