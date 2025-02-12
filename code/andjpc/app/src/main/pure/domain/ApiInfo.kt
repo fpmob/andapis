@@ -14,6 +14,6 @@ data class ApiSpec(
     val change: ApiChange       = ApiChange.None,
     val kind:   ApiKind         = ApiKind.None,
     val name:   String          = "(unspecified)",
+    val exec:   String          = "",
     val list:   List<ApiSpec>   = emptyList(),
 )
-
