@@ -78,6 +78,7 @@ fun jpcViewInner(padding: PaddingValues)
             }
         }
     */
+        var mutStateExec by remember { mutableStateOf("") }
         var mutStateSpec by remember { mutableStateOf(ApiSpec()) }
         if (hasApiGroup) Row(modifier = Modifier.weight(1.0f)) {
             jpcViewApiSpec(
@@ -92,9 +93,16 @@ fun jpcViewInner(padding: PaddingValues)
                 ColorPalette.BordApiSpec,
                 ColorPalette.ForeApiSpec,
                 mutStateSpec.list,
-                { spec -> mutStateSpec = spec }) }
-        if (hasExecNew)  Row(modifier = Modifier.weight(1.0f)) { jpcViewExecNew() }
-        if (hasExecOld)  Row(modifier = Modifier.weight(1.0f)) { jpcViewExecOld() }
+                { spec ->
+                    if (spec.list.isEmpty())
+                        mutStateExec = spec.exec
+                    else
+                        mutStateSpec = spec
+                }) }
+        if (hasExecNew)  Row(modifier = Modifier.weight(1.0f)) {
+            jpcViewExecNew(mutStateExec) }
+        if (hasExecOld)  Row(modifier = Modifier.weight(1.0f)) {
+            jpcViewExecOld() }
     }
 
 /* TODO: @@@ DEPRECATED THE BUTTONS
@@ -119,14 +127,15 @@ fun jpcButtonPanel(
 @Composable
 fun jpcViewTextItem(
     text:       String,
-    colorFore:  ColorPalette
+    colorFore:  ColorPalette,
+    maxLines:   Int = 1
 ) = Text(
         text        = text,
         color       = colorFrom(colorFore),
         fontFamily  = FontFamily.Monospace,
         fontWeight  = FontWeight.Bold,
         style       = MaterialTheme.typography.titleLarge,
-        maxLines    = 1,
+        maxLines    = maxLines,
         modifier    = Modifier
             .padding(
                 start = paddingCommon.dp, top    = paddingItemVert.dp,
@@ -152,23 +161,26 @@ fun RowScope.jpcViewApiSpec(
     colorBack:      ColorPalette,
     colorBord:      ColorPalette,
     colorFore:      ColorPalette,
-    specs:          List<ApiSpec>,
+    subspecs:       List<ApiSpec>,
     onItemSelected: (ApiSpec) -> Unit
 ) = jpcViewPanel(colorBack, colorBord) {
         LazyColumn {
-            items(specs) { spec ->
+            items(subspecs) { subspec ->
                 Row(modifier = Modifier
-                    .clickable { onItemSelected(spec) }
+                    .clickable { onItemSelected(subspec) }
                 ) {
-                    jpcViewTextItem(spec.name, colorFore)
+                    jpcViewTextItem(subspec.name, colorFore)
                 }
             }
         }
     }
 
 @Composable
-fun RowScope.jpcViewExecNew()
-  = jpcViewPanel(ColorPalette.BackExecNew,  ColorPalette.BordExecNew)
+fun RowScope.jpcViewExecNew(
+    exec: String
+) = jpcViewPanel(ColorPalette.BackExecNew, ColorPalette.BordExecNew) {
+        jpcViewTextItem(exec, ColorPalette.ForeExecNew, 4)
+    }
 
 @Composable
 fun RowScope.jpcViewExecOld()
