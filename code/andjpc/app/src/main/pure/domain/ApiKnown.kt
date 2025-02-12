@@ -12,6 +12,7 @@ val apiSpecs = listOf(
             ApiSpec(36, ApiChange.Altered, ApiKind.Type, "COLOR_CORRECTION_MODE"),
         )),
     )),
+    /* TODO: ### THESE APIS ARE MARKED @hide
     ApiSpec(kind=ApiKind.Package, name="android.net.wifi", list=listOf(
         ApiSpec(kind=ApiKind.Class, name="WifiManager", list=listOf(
             ApiSpec(36, ApiChange.Added, ApiKind.Method, "getAvailableAdvancedProtectionFeatures",
@@ -34,6 +35,19 @@ val apiSpecs = listOf(
     ApiSpec(kind=ApiKind.Package, name="android.net.wifi.util", list=listOf(
         ApiSpec(kind=ApiKind.Class, name="Environment", list=listOf(
             ApiSpec(36, ApiChange.Added, ApiKind.Method, "isSdkAtLeastB"),
+        )),
+    )),
+    */
+    ApiSpec(kind=ApiKind.Package, name="android.net.wifi.p2p", list=listOf(
+        ApiSpec(kind=ApiKind.Class, name="WifiP2pDirInfo", list=listOf(
+            ApiSpec(36, ApiChange.Added, ApiKind.Method, "WifiP2pDirInfo",
+                    "WifiP2pDirInfo() -> WifiP2pDirInfo"),
+            ApiSpec(36, ApiChange.Added, ApiKind.Method, "describeContents"),
+            ApiSpec(36, ApiChange.Added, ApiKind.Method, "getDirTag"),
+            ApiSpec(36, ApiChange.Added, ApiKind.Method, "getMacAddress"),
+            ApiSpec(36, ApiChange.Added, ApiKind.Method, "getNonce"),
+            ApiSpec(36, ApiChange.Added, ApiKind.Method, "toString"),
+            ApiSpec(36, ApiChange.Added, ApiKind.Method, "writeToParcel"),
         )),
     )),
 )
