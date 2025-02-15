@@ -94,7 +94,7 @@ fun jpcViewInner(padding: PaddingValues)
                         ?: "### MISSING API CALL"
                 }) }
         if (hasApiFinal) Row(modifier = Modifier.weight(1.0f)) {
-            jpcViewApiSpec(
+            jpcViewApiTree(
                 ColorPalette.BackApiSpec,
                 ColorPalette.BordApiSpec,
                 ColorPalette.ForeApiSpec,
@@ -106,7 +106,7 @@ fun jpcViewInner(padding: PaddingValues)
                         mutStateSpecCurr = spec
                 }) }
         if (hasApiGroup) Row(modifier = Modifier.weight(1.0f)) {
-            jpcViewApiSpec(
+            jpcViewApiTree(
                 ColorPalette.BackApiGroup,
                 ColorPalette.BordApiGroup,
                 ColorPalette.ForeApiGroup,
@@ -166,18 +166,32 @@ fun RowScope.jpcViewPanel(
     ) { content() }
 
 @Composable
-fun RowScope.jpcViewApiSpec(
+fun RowScope.jpcViewApiTree(
     colorBack:      ColorPalette,
     colorBord:      ColorPalette,
     colorFore:      ColorPalette,
-    subspecs:       List<ApiSpec>,
-    onItemSelected: (ApiSpec) -> Unit
+    specs:          List<ApiSpec>,
+    onSpecSelected: (ApiSpec) -> Unit
 ) = jpcViewPanel(colorBack, colorBord) {
         LazyColumn {
-            items(subspecs) { subspec ->
-                Row(modifier = Modifier.clickable { onItemSelected(subspec) }) {
-                    jpcViewTextItem(subspec.name, colorFore)
-                }
+            items(specs) { spec: ApiSpec ->
+                jpcViewApiTreeItemRec(colorFore, spec, onSpecSelected)
+            }
+        }
+    }
+
+@Composable
+fun jpcViewApiTreeItemRec(
+    colorFore:      ColorPalette,
+    spec:           ApiSpec,
+    onSpecSelected: (ApiSpec) -> Unit
+): Unit = Column {
+        Row(modifier = Modifier.clickable { onSpecSelected(spec) }) {
+            jpcViewTextItem(spec.name, colorFore)
+        }
+        Column(modifier = Modifier.padding(start = paddingCommon.dp)) {
+            spec.list.map { spec: ApiSpec ->
+                jpcViewApiTreeItemRec(colorFore, spec, onSpecSelected)
             }
         }
     }
