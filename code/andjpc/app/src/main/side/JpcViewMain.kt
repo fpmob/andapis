@@ -59,14 +59,14 @@ fun jpcViewInner(padding: PaddingValues)
         var hasExecRes  by remember { mutableStateOf(true) }
         var hasApiExec  by remember { mutableStateOf(true) }
         var hasApiFinal by remember { mutableStateOf(true) }
-        var hasApiGroup by remember { mutableStateOf(true) }
+        var hasApiTree by remember { mutableStateOf(true) }
     /* TODO: @@@ DEPRECATED THE BUTTONS
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(0.32f)
                     .padding(top = paddingCommon.dp,
                              end = paddingCommon.dp,
                           bottom = paddingCommon.dp)) {
-                jpcButtonPanel("API group", ColorPalette.BackApiGroup   ) { hasApiGroup  = !hasApiGroup }
+                jpcButtonPanel("API group", ColorPalette.BackApiTree   ) { hasApiTree  = !hasApiTree }
                 jpcButtonPanel("exec new",  ColorPalette.BackApiExec) { hasApiExec = !hasApiExec}
             }
             Column(modifier = Modifier.weight(0.32f)
@@ -93,25 +93,13 @@ fun jpcViewInner(padding: PaddingValues)
                         ?.let { it() }
                         ?: "### MISSING API CALL"
                 }) }
-        if (hasApiFinal) Row(modifier = Modifier.weight(1.0f)) {
+        if (hasApiTree) Row(modifier = Modifier.weight(1.0f)) {
             jpcViewApiTree(
-                ColorPalette.BackApiSpec,
-                ColorPalette.BordApiSpec,
-                ColorPalette.ForeApiSpec,
-                mutStateSpecCurr.list,
-                { spec ->
-                    if (spec.list.isEmpty())
-                        mutStateSpecExec = spec
-                    else
-                        mutStateSpecCurr = spec
-                }) }
-        if (hasApiGroup) Row(modifier = Modifier.weight(1.0f)) {
-            jpcViewApiTree(
-                ColorPalette.BackApiGroup,
-                ColorPalette.BordApiGroup,
-                ColorPalette.ForeApiGroup,
+                ColorPalette.BackApiTree,
+                ColorPalette.BordApiTree,
+                ColorPalette.ForeApiTree,
                 apiSpecs,
-                { spec -> mutStateSpecCurr = spec }) }
+                { spec -> mutStateSpecExec = spec }) }
     }
 
 /* TODO: @@@ DEPRECATED THE BUTTONS
