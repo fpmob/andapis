@@ -56,9 +56,8 @@ fun jpcViewInner(padding: PaddingValues)
         verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxSize().padding(padding)
     ) {
-        var hasExecRes  by remember { mutableStateOf(true) }
-        var hasApiExec  by remember { mutableStateOf(true) }
-        var hasApiFinal by remember { mutableStateOf(true) }
+        var hasExecRes by remember { mutableStateOf(true) }
+        var hasApiExec by remember { mutableStateOf(true) }
         var hasApiTree by remember { mutableStateOf(true) }
     /* TODO: @@@ DEPRECATED THE BUTTONS
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -78,18 +77,17 @@ fun jpcViewInner(padding: PaddingValues)
             }
         }
     */
-        var mutStateExecRes   by remember { mutableStateOf("") }
-        var mutStateSpecCurr  by remember { mutableStateOf(ApiSpec()) }
-        var mutStateSpecExec  by remember { mutableStateOf(ApiSpec()) }
+        var mutStateExecResult   by remember { mutableStateOf("") }
+        var mutStateExecSpecPair by remember { mutableStateOf(Pair(ApiSpec(),ApiSpec())) }
 
         if (hasExecRes)  Row(modifier = Modifier.weight(1.0f)) {
-            jpcViewExecRes(mutStateExecRes) }
+            jpcViewExecResult(mutStateExecResult) }
         if (hasApiExec)  Row(modifier = Modifier.weight(1.0f)) {
             jpcViewApiExec(
-                mutStateSpecExec,
-                { spec ->
-                    mutStateExecRes = apiCalls[
-                            mutStateSpecCurr.name + "." + spec.name]
+                mutStateExecSpecPair,
+                { specPair ->
+                    mutStateExecResult = apiCalls[  specPair.first .name + "."
+                                                  + specPair.second.name]
                         ?.let { it() }
                         ?: "### MISSING API CALL"
                 }) }
@@ -99,7 +97,7 @@ fun jpcViewInner(padding: PaddingValues)
                 ColorPalette.BordApiTree,
                 ColorPalette.ForeApiTree,
                 apiSpecs,
-                { spec -> mutStateSpecExec = spec }) }
+                { specPair -> mutStateExecSpecPair = specPair }) }
     }
 
 /* TODO: @@@ DEPRECATED THE BUTTONS
@@ -158,12 +156,12 @@ fun RowScope.jpcViewApiTree(
     colorBack:      ColorPalette,
     colorBord:      ColorPalette,
     colorFore:      ColorPalette,
-    specs:          List<ApiSpec>,
-    onSpecSelected: (ApiSpec) -> Unit
+    specList:       List<ApiSpec>,
+    onSpecSelected: (Pair<ApiSpec,ApiSpec>) -> Unit
 ) = jpcViewPanel(colorBack, colorBord) {
         LazyColumn {
-            items(specs) { spec: ApiSpec ->
-                jpcViewApiTreeItemRec(colorFore, spec, onSpecSelected)
+            items(specList) { spec: ApiSpec ->
+                jpcViewApiTreeItemRec(colorFore, Pair(spec,spec), onSpecSelected)
             }
         }
     }
@@ -171,13 +169,14 @@ fun RowScope.jpcViewApiTree(
 @Composable
 fun jpcViewApiTreeItemRec(
     colorFore:      ColorPalette,
-    spec:           ApiSpec,
-    onSpecSelected: (ApiSpec) -> Unit
+    specPair:       Pair<ApiSpec,ApiSpec>,
+    onSpecSelected: (Pair<ApiSpec,ApiSpec>) -> Unit
 ): Unit = Column {
         var mutStateExpanded by remember { mutableStateOf(false) }
+        val spec = specPair.second
         Row(modifier = Modifier.clickable {
             if (spec.list.isEmpty())
-                onSpecSelected(spec)
+                onSpecSelected(specPair)
             else
                 mutStateExpanded = !mutStateExpanded
         }) {
@@ -185,24 +184,24 @@ fun jpcViewApiTreeItemRec(
         }
         Column(modifier = Modifier.padding(start = paddingCommon.dp)) {
             if (mutStateExpanded)
-                spec.list.map { spec: ApiSpec ->
-                    jpcViewApiTreeItemRec(colorFore, spec, onSpecSelected)
+                spec.list.map { subspec: ApiSpec ->
+                    jpcViewApiTreeItemRec(colorFore, Pair(spec,subspec), onSpecSelected)
                 }
         }
     }
 
 @Composable
 fun RowScope.jpcViewApiExec(
-    spec:           ApiSpec,
-    onItemSelected: (ApiSpec) -> Unit
+    specPair:        Pair<ApiSpec,ApiSpec>,
+    onSpecSelected: (Pair<ApiSpec,ApiSpec>) -> Unit
 ) = jpcViewPanel(ColorPalette.BackApiExec, ColorPalette.BordApiExec) {
-        Box(modifier = Modifier.clickable { onItemSelected(spec) }) {
-            jpcViewTextItem(spec.exec, ColorPalette.ForeApiExec, 4)
+        Box(modifier = Modifier.clickable { onSpecSelected(specPair) }) {
+            jpcViewTextItem(specPair.second.exec, ColorPalette.ForeApiExec, 4)
         }
     }
 
 @Composable
-fun RowScope.jpcViewExecRes(
+fun RowScope.jpcViewExecResult(
     result: String
 ) = jpcViewPanel(ColorPalette.BackExecRes, ColorPalette.BordExecRes) {
         jpcViewTextItem(result, ColorPalette.ForeApiExec, 4)
