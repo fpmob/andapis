@@ -186,13 +186,20 @@ fun jpcViewApiTreeItemRec(
     spec:           ApiSpec,
     onSpecSelected: (ApiSpec) -> Unit
 ): Unit = Column {
-        Row(modifier = Modifier.clickable { onSpecSelected(spec) }) {
+        var mutStateExpanded by remember { mutableStateOf(false) }
+        Row(modifier = Modifier.clickable {
+            if (spec.list.isEmpty())
+                onSpecSelected(spec)
+            else
+                mutStateExpanded = !mutStateExpanded
+        }) {
             jpcViewTextItem(spec.name, colorFore)
         }
         Column(modifier = Modifier.padding(start = paddingCommon.dp)) {
-            spec.list.map { spec: ApiSpec ->
-                jpcViewApiTreeItemRec(colorFore, spec, onSpecSelected)
-            }
+            if (mutStateExpanded)
+                spec.list.map { spec: ApiSpec ->
+                    jpcViewApiTreeItemRec(colorFore, spec, onSpecSelected)
+                }
         }
     }
 
