@@ -14,11 +14,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
+import org.andapis.R
 import org.andapis.pure.domain.*
 import org.andapis.pure.present.*
 import org.andapis.ui.theme.AndjpcTheme
@@ -171,7 +173,7 @@ fun jpcViewApiTreeItemRec(
     colorFore:      ColorPalette,
     specPair:       Pair<ApiSpec,ApiSpec>,
     onSpecSelected: (Pair<ApiSpec,ApiSpec>) -> Unit
-): Unit = Column {
+): Unit = Column(modifier = Modifier.padding(start = paddingCommon.dp)) {
         var mutStateExpanded by remember { mutableStateOf(false) }
         val spec = specPair.second
         Row(modifier = Modifier.clickable {
@@ -180,9 +182,19 @@ fun jpcViewApiTreeItemRec(
             else
                 mutStateExpanded = !mutStateExpanded
         }) {
+            Icon(
+                painter = painterResource(
+                    if (spec.list.isEmpty())    R.drawable.ic_goomat_api_24
+                    else if (mutStateExpanded)  R.drawable.ic_goomat_arrow_drop_up_24
+                    else                        R.drawable.ic_goomat_arrow_drop_down_24),
+                contentDescription =
+                    if (spec.list.isEmpty())    "select API"
+                    else if (mutStateExpanded)  "collapse subspecs"
+                    else                        "expand subspecs"
+            )
             jpcViewTextItem(spec.name, colorFore)
         }
-        Column(modifier = Modifier.padding(start = paddingCommon.dp)) {
+        Column {
             if (mutStateExpanded)
                 spec.list.map { subspec: ApiSpec ->
                     jpcViewApiTreeItemRec(colorFore, Pair(spec,subspec), onSpecSelected)
