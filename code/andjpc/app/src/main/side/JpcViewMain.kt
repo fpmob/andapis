@@ -9,14 +9,12 @@ package org.andapis.side
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.foundation.shape.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
-import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
@@ -58,68 +56,37 @@ fun jpcViewInner(padding: PaddingValues)
         verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxSize().padding(padding)
     ) {
-        var hasExecRes by remember { mutableStateOf(true) }
-        var hasApiExec by remember { mutableStateOf(true) }
-        var hasApiTree by remember { mutableStateOf(true) }
-    /* TODO: @@@ DEPRECATED THE BUTTONS
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(modifier = Modifier.weight(0.32f)
-                    .padding(top = paddingCommon.dp,
-                             end = paddingCommon.dp,
-                          bottom = paddingCommon.dp)) {
-                jpcButtonPanel("API group", ColorPalette.BackApiTree   ) { hasApiTree  = !hasApiTree }
-                jpcButtonPanel("exec new",  ColorPalette.BackApiExec) { hasApiExec = !hasApiExec}
-            }
-            Column(modifier = Modifier.weight(0.32f)
-                    .padding(top = paddingCommon.dp,
-                             end = paddingCommon.dp,
-                          bottom = paddingCommon.dp)) {
-                jpcButtonPanel("API spec",  ColorPalette.BackApiSpec   ) { hasApiFinal  = !hasApiFinal }
-                jpcButtonPanel("exec old",  ColorPalette.BackExecRes) { hasExecRes = !hasExecRes }
-            }
-        }
-    */
+        var hasExecResult        by remember { mutableStateOf(false) }
+        var hasApiExec           by remember { mutableStateOf(false) }
+        var hasApiTree           by remember { mutableStateOf(true) }
         var mutStateExecResult   by remember { mutableStateOf("") }
         var mutStateExecSpecPair by remember { mutableStateOf(Pair(ApiSpec(),ApiSpec())) }
-
-        if (hasExecRes)  Row(modifier = Modifier.weight(1.0f)) {
-            jpcViewExecResult(mutStateExecResult) }
-        if (hasApiExec)  Row(modifier = Modifier.weight(1.0f)) {
-            jpcViewApiExec(
-                mutStateExecSpecPair,
-                { specPair ->
-                    mutStateExecResult = apiCalls[  specPair.first .name + "."
-                                                  + specPair.second.name]
-                        ?.let { it() }
-                        ?: "### MISSING API CALL"
-                }) }
         if (hasApiTree) Row(modifier = Modifier.weight(1.0f)) {
             jpcViewApiTree(
                 ColorPalette.BackApiTree,
                 ColorPalette.BordApiTree,
                 ColorPalette.ForeApiTree,
                 apiSpecs,
-                { specPair -> mutStateExecSpecPair = specPair }) }
+                { specPair ->
+                    hasApiExec = true
+                    hasExecResult = false
+                    mutStateExecSpecPair = specPair
+                }) }
+        if (hasApiExec) Row(modifier = Modifier.weight(1.0f)) {
+            jpcViewApiExec(
+                mutStateExecSpecPair,
+                { specPair ->
+                    hasExecResult = true
+                    mutStateExecResult =
+                        apiCalls[
+                             mutStateExecSpecPair.first .name + "."
+                           + mutStateExecSpecPair.second.name
+                        ]?.let { it() }
+                         ?: "### MISSING API CALL"
+                }) }
+        if (hasExecResult) Row(modifier = Modifier.weight(1.0f)) {
+            jpcViewExecResult(mutStateExecResult) }
     }
-
-/* TODO: @@@ DEPRECATED THE BUTTONS
-@Composable
-fun jpcButtonPanel(
-    label:      String,
-    colorBack:  ColorPalette,
-    action:     () -> Unit
-) =
-    Button({ action() },
-        shape = (2f * paddingCommon).let { RoundedCornerShape(it, it, it, it) },
-        colors = ButtonDefaults.buttonColors(containerColor = colorFrom(colorBack)),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(text = label,
-            letterSpacing = 0.sp,
-            overflow = TextOverflow.Clip,
-            style = MaterialTheme.typography.labelLarge)
-    }
-*/
 
 @Composable
 fun jpcViewTextItem(
