@@ -183,5 +183,5 @@ fun RowScope.jpcViewApiExec(
 fun RowScope.jpcViewExecResult(
     result: String
 ) = jpcViewPanel(ColorPalette.BackExecRes, ColorPalette.BordExecRes) {
-        jpcViewTextItem(result, ColorPalette.ForeApiExec, 4)
+        jpcViewTextItem(result, ColorPalette.ForeExecRes, 4)
     }
